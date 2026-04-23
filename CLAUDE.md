@@ -39,15 +39,33 @@ vite.config.ts                # base: "/portfolio-site/" を必ず維持
 
 ## デプロイ
 
-- `main` ブランチへの push で `.github/workflows/deploy.yml` が走り、GitHub Pages へ自動デプロイされる。
+- `main` への push で `.github/workflows/deploy.yml` が走り、GitHub Pages へ自動デプロイされる。
 - `vite.config.ts` の `base: "/portfolio-site/"` はリポジトリ名と一致させる必要がある(変更すると公開 URL のアセットパスが壊れる)。
 - 手動デプロイは不要。`dist/` は生成物のため触らない。
 
 ## 開発ルール
 
+### ブランチ運用
+
+**main 一本運用**。個人成果物のため feature ブランチは作らない。
+
+- 作業はすべて `main` 上で行い、push する。
+- push がそのまま本番デプロイになるため、**push 前に下記のローカルチェックを必ず通すこと**(レビュアーがいない代わり)。
+
+### push 前のローカル必須チェック
+
+以下を順に実行し、すべて成功してから `git push` する。一つでも失敗したら push しない。
+
+```sh
+npm run lint    # ESLint
+npm run build   # tsc -b && vite build(型チェック + ビルド)
+```
+
+`npm run build` 内の `tsc -b` で TypeScript の型エラーも検出される。`vite build` まで通れば本番デプロイで壊れる可能性は基本的にない。
+
 ### コミットメッセージ
 
-Conventional Commits 風の prefix を必ず付ける。日本語本文で OK。
+Conventional Commits 風の prefix を必ず付ける。本文は日本語で OK。
 
 - `feat:` 新機能・コンテンツ追加
 - `fix:` バグ修正
@@ -57,11 +75,6 @@ Conventional Commits 風の prefix を必ず付ける。日本語本文で OK。
 - `style:` フォーマット・整形
 
 例: `feat: プロジェクト一覧セクションを追加`
-
-### ブランチ
-
-- 作業ブランチは `feat/PORT-XX` 形式で切る(既存履歴に準拠)。
-- `main` への直 push はせず、PR 経由でマージする。
 
 ### コードスタイル
 
